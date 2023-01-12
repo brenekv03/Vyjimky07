@@ -21,7 +21,9 @@ namespace Vyjimky07
         private void button1_Click(object sender, EventArgs e)
         {
             DateTime dnes = DateTime.Today;
-            MessageBox.Show(dnes.ToString());
+            double prumerVeku = 0;
+            int pocet = 0;
+            int soucet = 0;
             try
             {
                 using (StreamReader sr = new StreamReader("Osoby.txt"))
@@ -34,24 +36,31 @@ namespace Vyjimky07
                             DateTime datumNarozeni = DateTime.Parse(radek);
                             try
                             {
-                                TimeSpan rozdil = dnes - datumNarozeni;
-                                int pocetDnu = rozdil.Days;
-                                MessageBox.Show(pocetDnu.ToString() + " " + datumNarozeni.ToString());
+                                int let = dnes.Year - datumNarozeni.Year;
+                                DateTime narozeninyLetos = datumNarozeni.AddYears(let);
+                                if (dnes < narozeninyLetos) let--;
+                                MessageBox.Show(let.ToString() + " " + datumNarozeni.ToString());
+                                try
+                                {
+                                    pocet++;
+                                    soucet += let;
+                                }
+                                catch (OverflowException)
+                                {
+                                    MessageBox.Show("Moc velké hodnoty");
+                                }
                             }
                             catch(FormatException)
                             {
-
-                            }
-                            catch(OverflowException)
-                            {
-
-                            }
+                                MessageBox.Show("Špatná informace");
+                            }                          
                         }
                         catch(FormatException)
                         {
                             MessageBox.Show("Vadný zápis");
                         }
                     }
+                    MessageBox.Show("Průměrný věk: " + (double)soucet / pocet);
                 }
             }
             catch(FileNotFoundException)
